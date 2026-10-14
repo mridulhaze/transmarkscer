@@ -1,0 +1,123 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NationalUniversityTranscriptDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NationalUniversityTranscriptDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="ExamineeTranscript">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="std_name" type="xs:string" minOccurs="0" />
+              <xs:element name="fname" type="xs:string" minOccurs="0" />
+              <xs:element name="mname" type="xs:string" minOccurs="0" />
+              <xs:element name="col_name" type="xs:string" minOccurs="0" />
+              <xs:element name="exm_roll" type="xs:string" minOccurs="0" />
+              <xs:element name="reg_no" type="xs:string" minOccurs="0" />
+              <xs:element name="SESSION" type="xs:string" minOccurs="0" />
+              <xs:element name="exm_year" type="xs:string" minOccurs="0" />
+              <xs:element name="exm_code" type="xs:string" minOccurs="0" />
+              <xs:element name="SESS1" type="xs:string" minOccurs="0" />
+              <xs:element name="C_CREDIT" type="xs:string" minOccurs="0" />
+              <xs:element name="T_CREDIT" type="xs:string" minOccurs="0" />
+              <xs:element name="CGPA" type="xs:string" minOccurs="0" />
+              <xs:element name="RES_DATE" type="xs:string" minOccurs="0" />
+              <xs:element name="CRT_SL" type="xs:string" minOccurs="0" />
+              <xs:element name="P11_S1" type="xs:string" minOccurs="0" />
+              <xs:element name="P12_S1" type="xs:string" minOccurs="0" />
+              <xs:element name="P13_S1" type="xs:string" minOccurs="0" />
+              <xs:element name="P14_S1" type="xs:string" minOccurs="0" />
+              <xs:element name="P15_S1" type="xs:string" minOccurs="0" />
+              <xs:element name="P16_S1" type="xs:string" minOccurs="0" />
+              <xs:element name="P17_S1" type="xs:string" minOccurs="0" />
+              <xs:element name="P18_S1" type="xs:string" minOccurs="0" />
+              <xs:element name="P19_S1" type="xs:string" minOccurs="0" />
+              <xs:element name="P20_S1" type="xs:string" minOccurs="0" />
+              <xs:element name="S1_GPA" type="xs:string" minOccurs="0" />
+              <xs:element name="P11_S2" type="xs:string" minOccurs="0" />
+              <xs:element name="P12_S2" type="xs:string" minOccurs="0" />
+              <xs:element name="P13_S2" type="xs:string" minOccurs="0" />
+              <xs:element name="P14_S2" type="xs:string" minOccurs="0" />
+              <xs:element name="P15_S2" type="xs:string" minOccurs="0" />
+              <xs:element name="P16_S2" type="xs:string" minOccurs="0" />
+              <xs:element name="P17_S2" type="xs:string" minOccurs="0" />
+              <xs:element name="P18_S2" type="xs:string" minOccurs="0" />
+              <xs:element name="P19_S2" type="xs:string" minOccurs="0" />
+              <xs:element name="P20_S2" type="xs:string" minOccurs="0" />
+              <xs:element name="S2_GPA" type="xs:string" minOccurs="0" />
+              <xs:element name="P11_S3" type="xs:string" minOccurs="0" />
+              <xs:element name="P12_S3" type="xs:string" minOccurs="0" />
+              <xs:element name="P13_S3" type="xs:string" minOccurs="0" />
+              <xs:element name="P14_S3" type="xs:string" minOccurs="0" />
+              <xs:element name="P15_S3" type="xs:string" minOccurs="0" />
+              <xs:element name="P16_S3" type="xs:string" minOccurs="0" />
+              <xs:element name="P17_S3" type="xs:string" minOccurs="0" />
+              <xs:element name="P18_S3" type="xs:string" minOccurs="0" />
+              <xs:element name="P19_S3" type="xs:string" minOccurs="0" />
+              <xs:element name="P20_S3" type="xs:string" minOccurs="0" />
+              <xs:element name="S3_GPA" type="xs:string" minOccurs="0" />
+              <xs:element name="P11_S4" type="xs:string" minOccurs="0" />
+              <xs:element name="P12_S4" type="xs:string" minOccurs="0" />
+              <xs:element name="P13_S4" type="xs:string" minOccurs="0" />
+              <xs:element name="P14_S4" type="xs:string" minOccurs="0" />
+              <xs:element name="P15_S4" type="xs:string" minOccurs="0" />
+              <xs:element name="P16_S4" type="xs:string" minOccurs="0" />
+              <xs:element name="P17_S4" type="xs:string" minOccurs="0" />
+              <xs:element name="P18_S4" type="xs:string" minOccurs="0" />
+              <xs:element name="P19_S4" type="xs:string" minOccurs="0" />
+              <xs:element name="P20_S4" type="xs:string" minOccurs="0" />
+              <xs:element name="S4_GPA" type="xs:string" minOccurs="0" />
+              <xs:element name="P11_S5" type="xs:string" minOccurs="0" />
+              <xs:element name="P12_S5" type="xs:string" minOccurs="0" />
+              <xs:element name="P13_S5" type="xs:string" minOccurs="0" />
+              <xs:element name="P14_S5" type="xs:string" minOccurs="0" />
+              <xs:element name="P15_S5" type="xs:string" minOccurs="0" />
+              <xs:element name="P16_S5" type="xs:string" minOccurs="0" />
+              <xs:element name="P17_S5" type="xs:string" minOccurs="0" />
+              <xs:element name="P18_S5" type="xs:string" minOccurs="0" />
+              <xs:element name="P19_S5" type="xs:string" minOccurs="0" />
+              <xs:element name="P20_S5" type="xs:string" minOccurs="0" />
+              <xs:element name="S5_GPA" type="xs:string" minOccurs="0" />
+              <xs:element name="P11_S6" type="xs:string" minOccurs="0" />
+              <xs:element name="P12_S6" type="xs:string" minOccurs="0" />
+              <xs:element name="P13_S6" type="xs:string" minOccurs="0" />
+              <xs:element name="P14_S6" type="xs:string" minOccurs="0" />
+              <xs:element name="P15_S6" type="xs:string" minOccurs="0" />
+              <xs:element name="P16_S6" type="xs:string" minOccurs="0" />
+              <xs:element name="P17_S6" type="xs:string" minOccurs="0" />
+              <xs:element name="P18_S6" type="xs:string" minOccurs="0" />
+              <xs:element name="P19_S6" type="xs:string" minOccurs="0" />
+              <xs:element name="P20_S6" type="xs:string" minOccurs="0" />
+              <xs:element name="S6_GPA" type="xs:string" minOccurs="0" />
+              <xs:element name="P11_S7" type="xs:string" minOccurs="0" />
+              <xs:element name="P12_S7" type="xs:string" minOccurs="0" />
+              <xs:element name="P13_S7" type="xs:string" minOccurs="0" />
+              <xs:element name="P14_S7" type="xs:string" minOccurs="0" />
+              <xs:element name="P15_S7" type="xs:string" minOccurs="0" />
+              <xs:element name="P16_S7" type="xs:string" minOccurs="0" />
+              <xs:element name="P17_S7" type="xs:string" minOccurs="0" />
+              <xs:element name="P18_S7" type="xs:string" minOccurs="0" />
+              <xs:element name="P19_S7" type="xs:string" minOccurs="0" />
+              <xs:element name="P20_S7" type="xs:string" minOccurs="0" />
+              <xs:element name="S7_GPA" type="xs:string" minOccurs="0" />
+              <xs:element name="P11_S8" type="xs:string" minOccurs="0" />
+              <xs:element name="P12_S8" type="xs:string" minOccurs="0" />
+              <xs:element name="P13_S8" type="xs:string" minOccurs="0" />
+              <xs:element name="P14_S8" type="xs:string" minOccurs="0" />
+              <xs:element name="P15_S8" type="xs:string" minOccurs="0" />
+              <xs:element name="P16_S8" type="xs:string" minOccurs="0" />
+              <xs:element name="P17_S8" type="xs:string" minOccurs="0" />
+              <xs:element name="P18_S8" type="xs:string" minOccurs="0" />
+              <xs:element name="P19_S8" type="xs:string" minOccurs="0" />
+              <xs:element name="P20_S8" type="xs:string" minOccurs="0" />
+              <xs:element name="S8_GPA" type="xs:string" minOccurs="0" />
+              <xs:element name="noncredit_1" type="xs:string" minOccurs="0" />
+              <xs:element name="noncredit_2" type="xs:string" minOccurs="0" />
+              <xs:element name="noncredit_3" type="xs:string" minOccurs="0" />
+              <xs:element name="noncredit_4" type="xs:string" minOccurs="0" />
+              <xs:element name="noncredit_5" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

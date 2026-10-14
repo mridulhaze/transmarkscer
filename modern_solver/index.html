@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="obsidian-emerald">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NU H-Type Solver - Modern Platform</title>
+  
+  <!-- Modern Typography & Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Full-Screen Login Modal Overlay (Authenticated via dbo.solvers table) -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-logo">NU</div>
+        <h2 style="font-size: 1.4rem; font-weight: 800;">NU H-Type Solver Access</h2>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Log in using credentials from <code>dbo.solvers</code> table</p>
+      </div>
+
+      <form class="login-form" id="loginForm" onsubmit="event.preventDefault(); window.app.handleLogin();">
+        <div class="form-group">
+          <label>Solver Username</label>
+          <select id="loginUsernameSelect" class="form-control" onchange="document.getElementById('loginUsername').value = this.value">
+            <option value="">-- Select Solver from Database --</option>
+            <option value="giash">giash (Gias Sir)</option>
+            <option value="rakib">rakib (Rakib)</option>
+            <option value="amin">amin (Aminul Islam)</option>
+            <option value="faruk">faruk (Dr. Faruk)</option>
+            <option value="a">a (Mridul Roy - Admin)</option>
+            <option value="arshed">arshed (Arshed)</option>
+            <option value="biswas">biswas (Prodip Kumar Biswas)</option>
+          </select>
+          <input type="text" id="loginUsername" class="form-control" placeholder="Or enter username..." required style="margin-top: 0.4rem;" />
+        </div>
+
+        <div class="form-group">
+          <label>Passkey / Password</label>
+          <input type="password" id="loginPassword" class="form-control" placeholder="Enter passkey (e.g. 1234, 123, a)" required />
+        </div>
+
+        <div id="loginError" style="color: var(--accent-rose); font-size: 0.8rem; font-weight: 600; display: none;">
+          ⚠️ Invalid username or passkey! Please try again.
+        </div>
+
+        <button type="submit" class="btn btn-accent" style="width: 100%; justify-content: center; padding: 0.75rem;">
+          🔐 Log In to Solver Workspace
+        </button>
+      </form>
+
+      <div style="border-top: 1px solid var(--border-color); padding-top: 1rem;">
+        <span style="font-size: 0.75rem; color: var(--text-muted);">⚡ Quick 1-Click Test Logins:</span>
+        <div class="quick-solvers-list">
+          <span class="quick-solver-chip" onclick="window.app.quickLogin('giash', '1234')">Gias Sir (1234)</span>
+          <span class="quick-solver-chip" onclick="window.app.quickLogin('rakib', '1234')">Rakib (1234)</span>
+          <span class="quick-solver-chip" onclick="window.app.quickLogin('amin', '123')">Amin (123)</span>
+          <span class="quick-solver-chip" onclick="window.app.quickLogin('a', 'a')">Admin (a)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="brand">
+      <div class="brand-icon">NU</div>
+      <div>
+        <div class="brand-title">NU H-Type Solver Platform</div>
+        <div class="brand-subtitle">OMR Scanner Data Correction & Validation</div>
+      </div>
+    </div>
+
+    <div class="nav-controls">
+      <!-- Dark Theme Switcher -->
+      <select class="theme-selector" id="themeSelector" onchange="window.app.changeTheme(this.value)">
+        <option value="obsidian-emerald">💚 Obsidian Emerald (OLED Dark)</option>
+        <option value="midnight-violet">💜 Midnight Cyber Violet</option>
+        <option value="oled-crimson">❤️ Deep OLED Crimson</option>
+      </select>
+
+      <button class="btn btn-outline" id="btnUploadFile">📤 Import Scan File</button>
+      
+      <div class="user-badge" id="userBadge">
+        <div class="user-avatar" id="userAvatar">R</div>
+        <span id="userBadgeText">Operator: <strong>Guest</strong></span>
+        <button class="btn btn-outline" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" onclick="window.app.logout()">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Application Container -->
+  <div class="app-container">
+    
+    <!-- Top Analytics Stats Bar -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <span>Completed Files</span>
+          <span>📁</span>
+        </div>
+        <div class="stat-value" id="statTotalFiles">0/0</div>
+        <div class="stat-desc">Files marked as SOLVED</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <span>Active Dataset Rows</span>
+          <span>📊</span>
+        </div>
+        <div class="stat-value" id="statTotalRows">0</div>
+        <div class="stat-desc">Scanned OMR answer sheet records</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <span>Validation Errors</span>
+          <span>⚠️</span>
+        </div>
+        <div class="stat-value" style="color: var(--accent-rose);" id="statErrorRows">0</div>
+        <div class="stat-desc">Anomalous rows requiring correction</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <span>Clean Data Ratio</span>
+          <span>✨</span>
+        </div>
+        <div class="stat-value" style="color: var(--accent-emerald);" id="statCleanCleanRate">100%</div>
+        <div class="stat-desc">Target accuracy rate</div>
+      </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="main-content">
+      
+      <!-- File Selector Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>📋 Assigned Scanned Files</span>
+          </div>
+        </div>
+
+        <div class="file-list" id="fileList">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Main Data Solving Workspace -->
+      <div class="panel" style="gap: 1.25rem;">
+        
+        <!-- Toolbar Controls -->
+        <div class="toolbar">
+          <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="searchInput" placeholder="Search by paper code, serial, error type..." />
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+            <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; cursor: pointer; color: var(--text-secondary);">
+              <input type="checkbox" id="chkErrorOnly" /> Show Errors Only
+            </label>
+
+            <button class="btn btn-accent" id="btnAutoFix">⚡ Smart Auto-Fix</button>
+            <button class="btn btn-primary" id="btnMarkSolved">✓ Mark Solved</button>
+
+            <button class="btn btn-outline" id="btnExportSQL">💾 SQL Script</button>
+            <button class="btn btn-outline" id="btnExportText">📄 OMR Export</button>
+          </div>
+        </div>
+
+        <!-- Data Grid -->
+        <div class="grid-container">
+          <table class="solver-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">Serial</th>
+                <th style="width: 140px;">Validation Status</th>
+                <th style="width: 110px;">Paper Code</th>
+                <th style="width: 110px;">Examiner (EB)</th>
+                <th style="width: 80px;">SL No</th>
+                <th style="width: 80px;">Marks</th>
+                <th>Litho Pattern Preview</th>
+                <th style="width: 100px;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="solverGridBody">
+              <!-- Populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Interactive 32-Bit Litho Inspector Modal -->
+  <div class="modal-overlay" id="lithoModal">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+        <h3 style="font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+          <span>🔍 32-Bit Binary Lithocode Inspector</span>
+        </h3>
+        <button id="modalClose" class="btn btn-outline" style="padding: 0.3rem 0.6rem;">✕</button>
+      </div>
+
+      <div id="modalRowInfo" style="font-family: 'JetBrains Mono', monospace; color: var(--accent-cyan); font-size: 0.9rem;"></div>
+
+      <div class="litho-inspector-card">
+        <div class="bit-strip-container">
+          <div class="bit-strip-label">
+            <span>Primary Dexcode (bdexcode):</span>
+            <span style="color: var(--accent-emerald);">Header [0-3] | Payload [4-27] | Footer [28-31]</span>
+          </div>
+          <div class="bit-strip" id="dexcodeBits"></div>
+        </div>
+
+        <div class="bit-strip-container">
+          <div class="bit-strip-label">
+            <span>Secondary Hexcode (bhexcode):</span>
+            <span style="color: var(--accent-purple);">Cross-verification copy</span>
+          </div>
+          <div class="bit-strip" id="hexcodeBits"></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+          <div>
+            <span style="color: var(--text-secondary); font-size: 0.85rem;">Status: </span>
+            <span id="lithoModalStatus"></span>
+          </div>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">💡 Click any bit chip to toggle between 0 and 1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Seed & App Scripts -->
+  <script src="seed_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

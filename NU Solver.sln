@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NU H-Type Solver", "NU Solver\NU H-Type Solver.csproj", "{B84E648E-3E5B-4A26-A3FD-4AB8AE2BDF94}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B84E648E-3E5B-4A26-A3FD-4AB8AE2BDF94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B84E648E-3E5B-4A26-A3FD-4AB8AE2BDF94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B84E648E-3E5B-4A26-A3FD-4AB8AE2BDF94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B84E648E-3E5B-4A26-A3FD-4AB8AE2BDF94}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

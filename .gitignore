@@ -1,0 +1,28 @@
+## Visual Studio / C# build outputs
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]uild/
+bld/
+[Ll]og/
+[Ll]ogs/
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## ClickOnce and packaging output
+Application Files/
+dist/
+
+## Large uncompressed data dumps (>100MB exceeds GitHub hard limit)
+## Note: Compressed archive examinee_course.sql.zip is included in the repo
+examinee_course.sql
+
+## Temporary files
+*.tmp
+*.log
