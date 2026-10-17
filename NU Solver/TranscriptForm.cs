@@ -64,6 +64,8 @@ namespace NU_Solver
         private Button btnGenerateTranscript;
         private Button btnGenerateCertificate;
         private Button btnStopGen;
+        private CheckBox chkDemoWatermark;
+        private Label lblDemoHelp;
 
         // Card 4: Administration & Audit Tools
         private Panel pnlCardAdminTools;
@@ -84,6 +86,7 @@ namespace NU_Solver
         private Label lblDocBadge;
         private Label lblPreviewSummary;
         private Button btnPrint;
+        private Button btnPrintPreview;
         private Button btnOpenBrowser;
         private Button btnOpenFolder;
         private Button btnHeaderAdmin;
@@ -670,7 +673,7 @@ namespace NU_Solver
             pnlCardActions = new Panel
             {
                 Width = cardW,
-                Height = 135,
+                Height = 184,
                 Location = new Point(12, 560),
                 BackColor = Color.White
             };
@@ -697,7 +700,7 @@ namespace NU_Solver
                 VectorGraphics.ColorPrimary, 
                 VectorGraphics.ColorPrimaryDark, 
                 VectorGraphics.ColorPrimaryHover, 
-                Color.White,
+                Color.White, 
                 8);
             btnGenerateTranscript.Click += (s, e) => StartGeneration("TRANSCRIPT");
 
@@ -705,7 +708,7 @@ namespace NU_Solver
             {
                 Text = "🎓 Generate Provisional Certificate",
                 Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                Location = new Point(cardPad, 82),
+                Location = new Point(cardPad, 80),
                 Size = new Size(innerW - 82, 40)
             };
             VectorGraphics.ApplyModernButton(
@@ -713,7 +716,7 @@ namespace NU_Solver
                 VectorGraphics.ColorSecondary, 
                 VectorGraphics.ColorSecondaryDark, 
                 VectorGraphics.ColorSecondaryHover, 
-                Color.White,
+                Color.White, 
                 8);
             btnGenerateCertificate.Click += (s, e) => StartGeneration("CERTIFICATE");
 
@@ -722,7 +725,7 @@ namespace NU_Solver
                 Text = "⏹ STOP\nPROCESS",
                 Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
                 Location = new Point(cardPad + innerW - 76, 34),
-                Size = new Size(76, 88),
+                Size = new Size(76, 86),
                 Cursor = Cursors.Hand
             };
             VectorGraphics.ApplyModernButton(
@@ -734,10 +737,49 @@ namespace NU_Solver
                 8);
             btnStopGen.Click += (s, e) => RequestStopProcess();
 
+            chkDemoWatermark = new CheckBox
+            {
+                Text = "🛡️ DEMO (SAMPLE Watermark)",
+                Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
+                ForeColor = Color.FromArgb(194, 65, 12),
+                Checked = true, // Default checked as requested
+                Location = new Point(cardPad, 128),
+                Width = innerW,
+                Height = 24,
+                Cursor = Cursors.Hand
+            };
+            chkDemoWatermark.CheckedChanged += (s, e) =>
+            {
+                if (chkDemoWatermark.Checked)
+                {
+                    chkDemoWatermark.ForeColor = Color.FromArgb(194, 65, 12);
+                    lblDemoHelp.Text = "• DEMO mode: document includes prominent 'SAMPLE' watermark.";
+                    lblDemoHelp.ForeColor = Color.FromArgb(194, 65, 12);
+                }
+                else
+                {
+                    chkDemoWatermark.ForeColor = VectorGraphics.ColorSuccess;
+                    lblDemoHelp.Text = "• Official mode: printing clean production document (no watermark).";
+                    lblDemoHelp.ForeColor = VectorGraphics.ColorSuccess;
+                }
+            };
+
+            lblDemoHelp = new Label
+            {
+                Text = "• Default enabled. Uncheck (Editor/Admin only) for official print.",
+                Font = new Font("Segoe UI", 7.2f, FontStyle.Italic),
+                ForeColor = Color.FromArgb(194, 65, 12),
+                Location = new Point(cardPad + 20, 154),
+                Width = innerW - 20,
+                Height = 22
+            };
+
             pnlCardActions.Controls.Add(lblCardActionsTitle);
             pnlCardActions.Controls.Add(btnGenerateTranscript);
             pnlCardActions.Controls.Add(btnGenerateCertificate);
             pnlCardActions.Controls.Add(btnStopGen);
+            pnlCardActions.Controls.Add(chkDemoWatermark);
+            pnlCardActions.Controls.Add(lblDemoHelp);
 
             // ------------------------------------------
             // CARD 4: Administration & Tools
@@ -746,7 +788,7 @@ namespace NU_Solver
             {
                 Width = cardW,
                 Height = 84,
-                Location = new Point(12, 708),
+                Location = new Point(12, 756),
                 BackColor = Color.White
             };
             pnlCardAdminTools.Paint += (s, e) => VectorGraphics.PaintCard(e.Graphics, new Rectangle(0, 0, pnlCardAdminTools.Width, pnlCardAdminTools.Height), 8);
@@ -812,7 +854,7 @@ namespace NU_Solver
             {
                 Width = cardW,
                 Height = 94,
-                Location = new Point(12, 804),
+                Location = new Point(12, 852),
                 BackColor = Color.White
             };
             pnlCardStatus.Paint += (s, e) => VectorGraphics.PaintCard(e.Graphics, new Rectangle(0, 0, pnlCardStatus.Width, pnlCardStatus.Height), 8);
@@ -930,7 +972,7 @@ namespace NU_Solver
                 Margin = new Padding(0, 4, 0, 0),
                 AutoSize = true,
                 AutoEllipsis = true,
-                MaximumSize = new Size(420, 24)
+                MaximumSize = new Size(300, 24)
             };
 
             pnlToolbarLeft.Controls.Add(lblDocBadge);
@@ -939,7 +981,7 @@ namespace NU_Solver
             FlowLayoutPanel pnlToolbarRight = new FlowLayoutPanel
             {
                 Dock = DockStyle.Right,
-                Width = 470,
+                AutoSize = true,
                 FlowDirection = FlowDirection.RightToLeft,
                 WrapContents = false,
                 Padding = new Padding(0, 7, 8, 0),
@@ -948,9 +990,9 @@ namespace NU_Solver
 
             btnPrint = new Button
             {
-                Text = "🖨️ Print Document",
+                Text = "🖨️ Print",
                 Font = new Font("Segoe UI", 9f, FontStyle.Bold),
-                Size = new Size(155, 36),
+                Size = new Size(125, 36),
                 Margin = new Padding(4, 0, 4, 0),
                 Enabled = false
             };
@@ -959,15 +1001,30 @@ namespace NU_Solver
                 VectorGraphics.ColorSecondary, 
                 VectorGraphics.ColorSecondaryDark, 
                 VectorGraphics.ColorSecondaryHover, 
-                Color.White,
+                Color.White, 
                 6);
             btnPrint.Click += btnPrint_Click;
 
+            btnPrintPreview = new Button
+            {
+                Text = "👁️ Print Preview",
+                Font = new Font("Segoe UI", 9f, FontStyle.Bold),
+                Size = new Size(135, 36),
+                Margin = new Padding(4, 0, 4, 0),
+                Enabled = false
+            };
+            VectorGraphics.ApplyOutlinedButton(
+                btnPrintPreview, 
+                VectorGraphics.ColorPrimary, 
+                VectorGraphics.ColorPrimaryDark, 
+                6);
+            btnPrintPreview.Click += btnPrintPreview_Click;
+
             btnOpenBrowser = new Button
             {
-                Text = "🌐 Open in Browser",
+                Text = "🌐 Browser",
                 Font = new Font("Segoe UI", 9f, FontStyle.Bold),
-                Size = new Size(140, 36),
+                Size = new Size(115, 36),
                 Margin = new Padding(4, 0, 4, 0),
                 Enabled = false
             };
@@ -994,6 +1051,7 @@ namespace NU_Solver
 
             pnlToolbarRight.Controls.Add(btnOpenFolder);
             pnlToolbarRight.Controls.Add(btnOpenBrowser);
+            pnlToolbarRight.Controls.Add(btnPrintPreview);
             pnlToolbarRight.Controls.Add(btnPrint);
 
             pnlPreviewToolbar.Controls.Add(pnlToolbarRight);
@@ -1213,6 +1271,7 @@ namespace NU_Solver
             options.StartBookSl = txtStartBookSl.Text.Trim();
             options.IssueDate = txtIssueDate.Text.Trim();
             options.StoredProcedureName = proc;
+            options.IsDemo = (chkDemoWatermark != null && chkDemoWatermark.Checked);
 
             SetWorkingState(true);
             currentDocType = mode;
@@ -1349,6 +1408,8 @@ namespace NU_Solver
 
                     btnPrint.Enabled = UserSession.CanPrint;
                     btnPrint.Visible = UserSession.CanPrint;
+                    btnPrintPreview.Enabled = true;
+                    btnPrintPreview.Visible = true;
                     btnOpenBrowser.Enabled = true;
 
                     // Display in WebBrowser
@@ -1390,6 +1451,7 @@ namespace NU_Solver
             txtRegNo.Enabled = !isWorking;
             cmbCoursePreset.Enabled = !isWorking;
             chkUseFastTable.Enabled = !isWorking;
+            if (btnPrintPreview != null) btnPrintPreview.Enabled = !isWorking && !string.IsNullOrEmpty(currentGeneratedHtmlPath);
 
             progressBar.Visible = isWorking;
         }
@@ -1427,6 +1489,7 @@ namespace NU_Solver
 
             try
             {
+                TranscriptGenerator.ClearBrowserPrintHeadersAndFooters();
                 webBrowser.ShowPrintDialog();
             }
             catch
@@ -1436,6 +1499,25 @@ namespace NU_Solver
                     Process.Start(new ProcessStartInfo(currentGeneratedHtmlPath) { UseShellExecute = true });
                 }
                 catch { }
+            }
+        }
+
+        private void btnPrintPreview_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(currentGeneratedHtmlPath) || !File.Exists(currentGeneratedHtmlPath))
+            {
+                MessageBox.Show("Please generate a transcript or certificate first.", "No Document Loaded", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                TranscriptGenerator.ClearBrowserPrintHeadersAndFooters();
+                webBrowser.ShowPrintPreviewDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not open print preview:\n" + ex.Message, "Print Preview Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -1521,6 +1603,7 @@ namespace NU_Solver
                 // CanPrint controls
                 bool canPrint = UserSession.CanPrint;
                 btnPrint.Visible = canPrint;
+                if (btnPrintPreview != null) btnPrintPreview.Visible = true;
                 btnGenerateTranscript.Enabled = canPrint || UserSession.CanView;
                 btnGenerateCertificate.Enabled = canPrint || UserSession.CanView;
 
@@ -1529,6 +1612,34 @@ namespace NU_Solver
                 btnCourseSettings.Enabled = canEdit;
                 btnQuickCourseEdit.Enabled = canEdit;
                 txtConnStr.ReadOnly = !canEdit;
+
+                // DEMO / Official Watermark control (Only Editor or Admin can uncheck)
+                bool canEditOrAdmin = canEdit || UserSession.IsAdmin;
+                if (chkDemoWatermark != null)
+                {
+                    if (!canEditOrAdmin)
+                    {
+                        // View-only operators are locked to DEMO mode with SAMPLE watermark
+                        chkDemoWatermark.Checked = true;
+                        chkDemoWatermark.Enabled = false;
+                        if (lblDemoHelp != null)
+                        {
+                            lblDemoHelp.Text = "• View-only operator: locked to DEMO mode with SAMPLE watermark.";
+                            lblDemoHelp.ForeColor = Color.FromArgb(194, 65, 12);
+                        }
+                    }
+                    else
+                    {
+                        chkDemoWatermark.Enabled = true;
+                        if (lblDemoHelp != null)
+                        {
+                            lblDemoHelp.Text = chkDemoWatermark.Checked 
+                                ? "• DEMO mode: document includes prominent 'SAMPLE' watermark." 
+                                : "• Official mode: printing clean production document (no watermark).";
+                            lblDemoHelp.ForeColor = chkDemoWatermark.Checked ? Color.FromArgb(194, 65, 12) : VectorGraphics.ColorSuccess;
+                        }
+                    }
+                }
 
                 // Admin privileges
                 bool isAdmin = UserSession.IsAdmin;

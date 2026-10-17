@@ -869,6 +869,21 @@ To generate a single, zero-dependency executable bundling all external assemblie
 
 ---
 
+### Milestone 24: Print Header Suppression, Print Preview Toolbar, and DEMO Watermark
+- **User Requests**:
+  1. Remove the top `"Academic Transcript - National University Bangladesh"` header and fix the upper side of the transcript in physical print.
+  2. Add a `Print Preview` dialog button to inspect exact print layout before sending to hardware.
+  3. Fixed printable paper size on screen preview (centered sheet with shadow, not stretched fullscreen).
+  4. Default-checked `DEMO` checkbox producing a prominent rotated `"SAMPLE"` watermark, which can only be unchecked by Editor/Admin for clean official printing.
+- **Root Cause & Technical Fixes**:
+  - **Browser Header / Footer Suppression**: Internet Explorer's WebBrowser control by default printed page titles and URLs using `HKCU\Software\Microsoft\Internet Explorer\PageSetup` (`header` and `footer`). This caused `"Academic Transcript - National University Bangladesh"` to print at the top-left and `Page 1 of 1` at the top-right, colliding with the university crest. Fixed by implementing `TranscriptGenerator.ClearBrowserPrintHeadersAndFooters()` which clears the registry `header` and `footer` values before any print or preview operation, and setting `<title></title>`.
+  - **Upper Margin Fix**: Adjusted `@page` margins to `10mm 10mm 8mm 10mm` for A4 (and `6mm 8mm 6mm 8mm` for Legal), and set `@media print .transcript-page` padding to `4mm 6mm 4mm 6mm` (total 14mm top clearance from physical paper edge), ensuring clean spacing from the paper top without clipping or crest collision.
+  - **Print Preview Action**: Added `btnPrintPreview` (`👁️ Print Preview`) to the preview toolbar, invoking `webBrowser.ShowPrintPreviewDialog()` with safety checks and automatic registry header suppression.
+  - **Fixed Printable Paper Size**: Screen preview displays as a true-to-scale centered sheet (`.transcript-page` at `210mm` width for A4, `216mm` for Legal) with subtle elevation shadow on `#eef2f6` canvas background.
+  - **DEMO / SAMPLE Watermark**: Added `chkDemoWatermark` to Generation card (default checked). Renders a high-contrast semi-transparent rotated `"SAMPLE"` watermark across transcripts and certificates. Locked to DEMO mode for View-only operators; Editor and Admin roles can toggle to print clean official documents.
+
+---
+
 ### Recommended Next Steps for Future Agents / Developers
 1. **Direct PDF Export Engine**:
    - *Current Implementation*: Generates self-contained HTML reports with `@media print` rules, which users print to paper or "Microsoft Print to PDF" via the browser dialog.
@@ -884,4 +899,5 @@ To generate a single, zero-dependency executable bundling all external assemblie
 
 *Authored by Antigravity Agentic AI — Google DeepMind (Advanced Agentic Coding)*  
 *Maintained for National University, Bangladesh.*
+
 

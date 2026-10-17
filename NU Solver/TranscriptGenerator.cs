@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace NU_Solver
 {
@@ -46,6 +47,10 @@ namespace NU_Solver
         public string StoredProcedureName { get; set; }
         public string RdlcFilePath { get; set; }
 
+        // Watermark & DEMO options
+        public bool IsDemo { get; set; } // true = generate with "SAMPLE" background watermark
+        public string WatermarkText { get; set; } // default "SAMPLE"
+
         // Crystal Reports Typography Customizations
         public string FontStudentName { get; set; }
         public int FontSizeStudentName { get; set; }
@@ -75,6 +80,8 @@ namespace NU_Solver
             TotalCredits = 44;
             StoredProcedureName = "dbo.BBAMCPCTRANS_lot";
             RdlcFilePath = "";
+            IsDemo = true;
+            WatermarkText = "SAMPLE";
 
             FontStudentName = "Brush Script MT";
             FontSizeStudentName = 24;
@@ -667,6 +674,26 @@ namespace NU_Solver
             }
         }
 
+        /// <summary>
+        /// Clears Internet Explorer / WebBrowser printing headers and footers in Windows Registry
+        /// so official transcripts and certificates never print with browser titles, URLs, dates, or page numbers.
+        /// </summary>
+        public static void ClearBrowserPrintHeadersAndFooters()
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Internet Explorer\PageSetup", true))
+                {
+                    if (key != null)
+                    {
+                        key.SetValue("header", "");
+                        key.SetValue("footer", "");
+                    }
+                }
+            }
+            catch { }
+        }
+
         public static string GenerateTranscriptHtml(
             DataTable dtExaminees, 
             Dictionary<string, CourseInfo> courseDict, 
@@ -743,9 +770,9 @@ namespace NU_Solver
             sb.AppendLine("<!DOCTYPE html>");
             sb.AppendLine("<html><head><meta charset='utf-8'>");
             sb.AppendLine("<meta http-equiv='X-UA-Compatible' content='IE=edge'>");
-            sb.AppendLine("<title>Academic Transcript - National University Bangladesh</title>");
+            sb.AppendLine("<title></title>");
             sb.AppendLine("<style>");
-            sb.AppendFormat("@page {{ size: {0}; margin: {1}; }}\r\n", pageSizeCss, isLegal ? "4mm 6mm" : "5mm 8mm");
+            sb.AppendFormat("@page {{ size: {0}; margin: {1}; }}\r\n", pageSizeCss, isLegal ? "6mm 8mm 6mm 8mm" : "10mm 10mm 8mm 10mm");
             sb.AppendLine("*, *:before, *:after { box-sizing: border-box; }");
 
             string trFont = !string.IsNullOrEmpty(options.FontTranscriptTable) ? options.FontTranscriptTable : "Segoe UI";
@@ -754,12 +781,15 @@ namespace NU_Solver
                 trFont, isLegal ? trSize : trSize + 2);
 
             sb.AppendLine(isLegal
-                ? ".transcript-page { width: 100%; max-width: 100%; margin: 0 0 16px 0; padding: 10px 18px; border: 1px solid #cbd5e1; box-shadow: 0 4px 14px rgba(0,0,0,0.06); background: #fff; position: relative; box-sizing: border-box; page-break-after: always; break-after: page; page-break-inside: avoid; break-inside: avoid; }"
-                : ".transcript-page { width: 100%; max-width: 100%; margin: 0 0 18px 0; padding: 14px 22px; border: 1px solid #cbd5e1; box-shadow: 0 4px 14px rgba(0,0,0,0.06); background: #fff; position: relative; box-sizing: border-box; page-break-after: always; break-after: page; page-break-inside: avoid; break-inside: avoid; }");
+                ? ".transcript-page { width: 216mm; max-width: 840px; margin: 18px auto; padding: 10px 18px; border: 1px solid #cbd5e1; box-shadow: 0 4px 18px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.06); background: #fff; position: relative; box-sizing: border-box; page-break-after: always; break-after: page; page-break-inside: avoid; break-inside: avoid; overflow: hidden; }"
+                : ".transcript-page { width: 210mm; max-width: 820px; margin: 18px auto; padding: 14px 22px; border: 1px solid #cbd5e1; box-shadow: 0 4px 18px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.06); background: #fff; position: relative; box-sizing: border-box; page-break-after: always; break-after: page; page-break-inside: avoid; break-inside: avoid; overflow: hidden; }");
+
+            sb.AppendLine(".watermark { position: absolute; top: 50%; left: 50%; -ms-transform: translate(-50%, -50%) rotate(-32deg); -webkit-transform: translate(-50%, -50%) rotate(-32deg); transform: translate(-50%, -50%) rotate(-32deg); font-size: 110px; font-weight: 900; font-family: 'Arial Black', Impact, 'Segoe UI', Arial, sans-serif; letter-spacing: 18px; color: rgba(220, 38, 38, 0.12); border: 7px dashed rgba(220, 38, 38, 0.15); padding: 10px 42px; border-radius: 14px; text-transform: uppercase; pointer-events: none; user-select: none; z-index: 10; white-space: nowrap; text-align: center; }");
 
             sb.AppendLine("@media print {");
             sb.AppendLine("  body { padding: 0 !important; margin: 0 !important; background: none !important; }");
-            sb.AppendLine("  .transcript-page { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; page-break-after: always; break-after: page; page-break-inside: avoid; break-inside: avoid; }");
+            sb.AppendLine("  .transcript-page { border: none !important; box-shadow: none !important; padding: " + (isLegal ? "2mm 4mm 2mm 4mm" : "4mm 6mm 4mm 6mm") + " !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; page-break-after: always; break-after: page; page-break-inside: avoid; break-inside: avoid; }");
+            sb.AppendLine("  .watermark { color: rgba(185, 28, 28, 0.14) !important; border-color: rgba(185, 28, 28, 0.16) !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }");
             sb.AppendLine("  .no-print { display: none !important; }");
             sb.AppendLine("}");
             
@@ -974,6 +1004,11 @@ namespace NU_Solver
                 if (totalAllPapers == 0) totalAllPapers = 1;
 
                 sb.AppendLine("<div class='transcript-page'>");
+                if (options != null && options.IsDemo)
+                {
+                    string wm = string.IsNullOrEmpty(options.WatermarkText) ? "SAMPLE" : options.WatermarkText;
+                    sb.AppendFormat("  <div class='watermark'>{0}</div>\r\n", wm);
+                }
 
                 // Header Table
                 sb.AppendLine("  <table class='header-table'><tr>");
@@ -1245,19 +1280,21 @@ namespace NU_Solver
             sb.AppendLine("<!DOCTYPE html>");
             sb.AppendLine("<html><head><meta charset='utf-8'>");
             sb.AppendLine("<meta http-equiv='X-UA-Compatible' content='IE=edge'>");
-            sb.AppendLine("<title>Provisional Certificate - National University Bangladesh</title>");
+            sb.AppendLine("<title></title>");
             sb.AppendLine("<style>");
             sb.AppendLine("@page { size: A4 landscape; margin: 8mm 10mm; }");
             sb.AppendLine("*, *:before, *:after { box-sizing: border-box; }");
             sb.AppendFormat("body {{ font-family: '{0}', 'Times New Roman', Georgia, serif; margin: 0; padding: 6px; color: #111; background: #eef2f6; font-size: {1}px; }}\r\n", fontBody, fontBodySize);
             
-            // Certificate Container & Ornate Security Frame
-            sb.AppendLine(".cert-page { width: 100%; max-width: 100%; min-height: 640px; margin: 0 0 20px 0; padding: 34px 44px; background: #fff; position: relative; box-sizing: border-box; page-break-after: always; break-after: page; page-break-inside: avoid; break-inside: avoid; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }");
+            // Certificate Container & Ornate Security Frame (Fixed Printable A4 Landscape Paper Sheet)
+            sb.AppendLine(".cert-page { width: 297mm; max-width: 1060px; min-height: 640px; margin: 18px auto; padding: 34px 44px; background: #fff; position: relative; box-sizing: border-box; page-break-after: always; break-after: page; page-break-inside: avoid; break-inside: avoid; box-shadow: 0 4px 18px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #cbd5e1; overflow: hidden; }");
             sb.AppendLine(".cert-frame-svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }");
             sb.AppendLine(".cert-content-layer { position: relative; z-index: 1; }");
+            sb.AppendLine(".cert-watermark { position: absolute; top: 50%; left: 50%; -ms-transform: translate(-50%, -50%) rotate(-25deg); -webkit-transform: translate(-50%, -50%) rotate(-25deg); transform: translate(-50%, -50%) rotate(-25deg); font-size: 120px; font-weight: 900; font-family: 'Arial Black', Impact, 'Segoe UI', Arial, sans-serif; letter-spacing: 20px; color: rgba(29, 78, 216, 0.12); border: 7px dashed rgba(29, 78, 216, 0.15); padding: 12px 50px; border-radius: 14px; text-transform: uppercase; pointer-events: none; user-select: none; z-index: 10; white-space: nowrap; text-align: center; }");
             sb.AppendLine("@media print {");
             sb.AppendLine("  body { padding: 0 !important; margin: 0 !important; background: none !important; }");
-            sb.AppendLine("  .cert-page { box-shadow: none !important; padding: 34px 44px !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; page-break-after: always; break-after: page; page-break-inside: avoid; break-inside: avoid; }");
+            sb.AppendLine("  .cert-page { border: none !important; box-shadow: none !important; padding: 34px 44px !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; page-break-after: always; break-after: page; page-break-inside: avoid; break-inside: avoid; }");
+            sb.AppendLine("  .cert-watermark { color: rgba(29, 78, 216, 0.14) !important; border-color: rgba(29, 78, 216, 0.16) !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }");
             sb.AppendLine("  .no-print { display: none !important; }");
             sb.AppendLine("}");
 
@@ -1383,6 +1420,11 @@ namespace NU_Solver
                 sb.AppendLine("  </svg>");
 
                 sb.AppendLine("  <div class='cert-content-layer'>");
+                if (options != null && options.IsDemo)
+                {
+                    string wm = string.IsNullOrEmpty(options.WatermarkText) ? "SAMPLE" : options.WatermarkText;
+                    sb.AppendFormat("    <div class='cert-watermark'>{0}</div>\r\n", wm);
+                }
 
                 // Top Header Row
                 sb.AppendLine("    <table class='cert-header-table'><tr>");
@@ -1390,7 +1432,10 @@ namespace NU_Solver
                 // Top Left
                 sb.AppendLine("      <td class='cert-top-left'>");
                 sb.AppendFormat("        <div>{0}</div>\r\n", serialDisplay);
-                sb.AppendLine("        <div class='sample-watermark'>Sample</div>");
+                if (options != null && options.IsDemo)
+                {
+                    sb.AppendLine("        <div class='sample-watermark'>Sample</div>");
+                }
                 sb.AppendLine("      </td>");
 
                 // Top Center
