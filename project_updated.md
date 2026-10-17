@@ -854,7 +854,18 @@ To generate a single, zero-dependency executable bundling all external assemblie
   5. **Admin & RBAC**: The Admin Dashboard, Course Design customizer, Print Audit logging, and granular user permission manager are live and operational.
   6. **SAP Crystal Reports (.rpt) Integration**: Dynamic reflection-based `.rpt` runtime engine, one-click XSD/XML schema export for SAP Crystal Reports Designer, and live test loader.
   7. **User Credential View & Protection**: "Academic Transcript & Certificate" entry point guarded by `dbo.transcript_user`, displaying the modern `UserCredentialViewDialog` authority matrix before opening.
-  8. **Stop / Cancellation Controls**: Instant SQL query abortion and background worker cancellation via `activeQueryCmd.Cancel()`.
+   8. **Stop / Cancellation Controls**: Instant SQL query abortion and background worker cancellation via `activeQueryCmd.Cancel()`.
+   9. **Stored Procedure Staging Isolation (Milestone 23)**: Resolved SQL Server exception `There is already an object named 'transcript_data_MED_2024_22603000050_imp' in the database`. The stored procedure `[dbo].[BBAMCPCTRANS_lot]` in `m_ed` database was restored from repository baseline, removing an un-commented temporary `INTO transcript_data_...` clause that caused collisions during transcript generation.
+
+---
+
+### Milestone 23: Database Stored Procedure Hotfix (Object Already Exists Collision)
+- **Defect Symptom**: When generating Academic Transcripts (e.g. for Exam Year 2022 / Reg No 22603000005), the application surfaced:
+  `Generation Error: There is already an object named 'transcript_data_MED_2024_22603000050_imp' in the database.`
+- **Root Cause Analysis**:
+  A manual modification was applied directly to `[dbo].[BBAMCPCTRANS_lot]` on the SQL Server (`192.168.0.230\m_ed`), adding an un-commented `INTO transcript_data_MED_2024_22603000050_imp` clause before the `FROM` block. Because `SELECT ... INTO` attempts to create a new physical table on every execution, the second run crashed with SQL Server error 2714. Furthermore, `SELECT ... INTO` suppressed returning the result set to `SqlDataAdapter.Fill()`.
+- **Resolution**:
+  Re-applied the clean stored procedure definition from `BBAMCPCTRANS_lot.sql` directly to the `m_ed` database. Verified that `BBAMCPCTRANS_lot` executes cleanly, returning live examinee records directly to `TranscriptGenerator.FetchTranscriptData` and rendering the official transcript without errors.
 
 ---
 
@@ -873,3 +884,4 @@ To generate a single, zero-dependency executable bundling all external assemblie
 
 *Authored by Antigravity Agentic AI — Google DeepMind (Advanced Agentic Coding)*  
 *Maintained for National University, Bangladesh.*
+
